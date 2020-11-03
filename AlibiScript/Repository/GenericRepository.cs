@@ -1,4 +1,5 @@
 ﻿using AlibiScript.Interface;
+using AlibiScript.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace AlibiScript.Repository
 {
     public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        private readonly object DBcontext;
+        private readonly AlibiDBContext DBcontext;
         protected object Context { get { return DBcontext; } }
-        public GenericRepository(object DB) {
-            DBcontext = DB;
+        public GenericRepository(AlibiDBContext alibiDBContext) {
+            DBcontext = alibiDBContext;
         }
 
         public void Create(TEntity entity)
