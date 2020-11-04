@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AlibiScript.Interface
 {
-    interface IRepository<TEntity>
+    public interface IRepository<TEntity>
     {
         /// <summary>
         /// 新增
@@ -19,14 +19,14 @@ namespace AlibiScript.Interface
         /// 取得全部
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<TEntity>> GetAllAsync();
+        IEnumerable<TEntity> GetAll();
 
         /// <summary>
         /// 特定條件取得取得
         /// </summary>
         /// <param name="expression">查詢條件</param>
         /// <returns></returns>
-        Task<TEntity> Get(Expression<Func<TEntity, bool>> expression);
+        IEnumerable<TEntity> GetBy(Expression<Func<TEntity, bool>> expression);
 
         /// <summary>
         /// 刪除

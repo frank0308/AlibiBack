@@ -16,6 +16,7 @@ namespace AlibiScript.Model
         public string Name { get; set; }
         public string Image { get; set; }
 
+        public virtual UserRole UserRole { get; set; }
         public virtual ICollection<Script> Script { get; set; }
     }
 }

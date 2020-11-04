@@ -163,7 +163,6 @@ namespace AlibiScript.Model
                     .HasMaxLength(20);
 
                 entity.Property(e => e.Image)
-                    .IsRequired()
                     .HasColumnName("image")
                     .HasMaxLength(50);
 
@@ -175,7 +174,7 @@ namespace AlibiScript.Model
                 entity.Property(e => e.Password)
                     .IsRequired()
                     .HasColumnName("password")
-                    .HasMaxLength(20);
+                    .HasMaxLength(150);
             });
 
             modelBuilder.Entity<UserRole>(entity =>
@@ -190,6 +189,12 @@ namespace AlibiScript.Model
                 entity.Property(e => e.Role)
                     .IsRequired()
                     .HasMaxLength(10);
+
+                entity.HasOne(d => d.User)
+                    .WithOne(p => p.UserRole)
+                    .HasForeignKey<UserRole>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserRole_User");
             });
 
             OnModelCreatingPartial(modelBuilder);
