@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +18,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using NSwag;
+using NSwag.Generation.Processors.Security;
 
 namespace AlibiScript
 {
@@ -65,6 +65,22 @@ namespace AlibiScript
                     {
                         builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                     });
+            });
+
+            // Add OpenAPI v3 document
+            services.AddOpenApiDocument(config => {
+                config.Title = "Alibi Script Box API";
+                config.Description = "APIs for Alibi Script Box";
+
+                config.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+                {
+                    Type = OpenApiSecuritySchemeType.ApiKey,
+                    Name = "Authorization",
+                    In = OpenApiSecurityApiKeyLocation.Header,
+                    Description = "請輸入檢核碼: Bearer {你的JWT檢核碼}"
+                });
+
+                config.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
 
             //註冊Jwt
@@ -113,6 +129,10 @@ namespace AlibiScript
             app.UseRouting();
 
             app.UseCors();
+
+            app.UseOpenApi();       // serve OpenAPI/Swagger documents
+
+            app.UseSwaggerUi3();    // serve Swagger UI
 
             app.UseAuthentication(); //先驗證
 
