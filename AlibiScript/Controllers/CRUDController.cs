@@ -22,37 +22,37 @@ namespace AlibiScript.Controllers
 
         // GET: api/CRUD
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
-            return await _context.User.ToListAsync();
+            return await _context.Users.ToListAsync();
         }
 
         // GET: api/CRUD/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(Guid id)
+        public async Task<ActionResult<Users>> GetUsers(Guid id)
         {
-            var user = await _context.User.FindAsync(id);
+            var users = await _context.Users.FindAsync(id);
 
-            if (user == null)
+            if (users == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return users;
         }
 
         // PUT: api/CRUD/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(Guid id, User user)
+        public async Task<IActionResult> PutUsers(Guid id, Users users)
         {
-            if (id != user.Id)
+            if (id != users.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(users).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace AlibiScript.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!UsersExists(id))
                 {
                     return NotFound();
                 }
@@ -77,16 +77,16 @@ namespace AlibiScript.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<Users>> PostUsers(Users users)
         {
-            _context.User.Add(user);
+            _context.Users.Add(users);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (UserExists(user.Id))
+                if (UsersExists(users.Id))
                 {
                     return Conflict();
                 }
@@ -96,28 +96,28 @@ namespace AlibiScript.Controllers
                 }
             }
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("GetUsers", new { id = users.Id }, users);
         }
 
         // DELETE: api/CRUD/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(Guid id)
+        public async Task<ActionResult<Users>> DeleteUsers(Guid id)
         {
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
+            var users = await _context.Users.FindAsync(id);
+            if (users == null)
             {
                 return NotFound();
             }
 
-            _context.User.Remove(user);
+            _context.Users.Remove(users);
             await _context.SaveChangesAsync();
 
-            return user;
+            return users;
         }
 
-        private bool UserExists(Guid id)
+        private bool UsersExists(Guid id)
         {
-            return _context.User.Any(e => e.Id == id);
+            return _context.Users.Any(e => e.Id == id);
         }
     }
 }

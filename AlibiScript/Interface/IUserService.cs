@@ -1,4 +1,5 @@
 ﻿using AlibiScript.Model;
+using AlibiScript.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,9 @@ namespace AlibiScript.Interface
 {
     public interface IUserService
     {
-        public bool UserSignUp(User user);
+        public bool UserSignUp(SignUpViewModel user);
+        public bool UserExist(string account);
+        public bool LoginVerify(LoginViewModel loginVM);
+        public UserInfoViewModel GetUserInfo(string account);
     }
 }

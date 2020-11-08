@@ -1,38 +1,86 @@
 ﻿using AlibiScript.Interface;
 using AlibiScript.Model;
+using AlibiScript.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace AlibiScript.Service
 {
     public class UserService : IUserService
     {
-        private readonly IRepository<User> _repo;
+        private readonly IRepository<Users> _repo;
+        private readonly IRepository<UserRole> _repo_Role;
         private readonly IEncryptionAdapter _encrypt;
-        public UserService(IRepository<User> repository, IEncryptionAdapter encryptionAdapter)
+        public UserService(IRepository<Users> userRepo, IEncryptionAdapter encryptionAdapter, IRepository<UserRole> userRoleRepo)
         {
-            _repo = repository;
+            _repo = userRepo;
             _encrypt = encryptionAdapter;
+            _repo_Role = userRoleRepo;
         }
 
-        public bool UserSignUp(User user)
+        public bool UserSignUp(SignUpViewModel userVM)
         {
-            if (UserExist(user.Account))
+            if (UserExist(userVM.Account))
             {
                 return false;
             }
-            user.Password = _encrypt.HashPassword(user.Password);
+
+            Users user = new Users
+            {
+                Account = userVM.Account,
+                Password = _encrypt.HashPassword(userVM.Password),
+                Id = Guid.NewGuid(),
+                Image = userVM.Avatar,
+                Name = userVM.Name,
+                ApplicatedDate = DateTime.Now
+            };
+
+            UserRole role = new UserRole();
+            if(userVM.IsScriptOwner == "true")
+            {
+                role.Role = "Owner";
+                role.UserId = user.Id;
+            } else
+            {
+                role.Role = "User";
+                role.UserId = user.Id;
+
+            };
+
             _repo.Create(user);
+            _repo_Role.Create(role);
             return true;
         }
 
-        private bool UserExist(string account)
+        public bool LoginVerify(LoginViewModel loginVM)
+        {
+            if (UserExist(loginVM.account))
+            {
+                Users user = _repo.GetAll().Single(x => x.Account == loginVM.account);
+                if(_encrypt.Verify(user.Password, loginVM.password))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool UserExist(string account)
         {
             return _repo.GetAll().Any(x => x.Account == account);
         }
 
+        public UserInfoViewModel GetUserInfo(string account)
+        {
+            Users user = _repo.GetAll().FirstOrDefault(x => x.Account == account);
+            return new UserInfoViewModel
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Image = user.Image
+            };
+        }
     }
 }

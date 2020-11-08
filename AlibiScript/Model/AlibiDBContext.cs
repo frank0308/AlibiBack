@@ -15,12 +15,12 @@ namespace AlibiScript.Model
         {
         }
 
-        public virtual DbSet<Category> Category { get; set; }
-        public virtual DbSet<Character> Character { get; set; }
-        public virtual DbSet<Script> Script { get; set; }
-        public virtual DbSet<ScriptImage> ScriptImage { get; set; }
-        public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<Categories> Categories { get; set; }
+        public virtual DbSet<Characters> Characters { get; set; }
+        public virtual DbSet<ScriptImages> ScriptImages { get; set; }
+        public virtual DbSet<Scripts> Scripts { get; set; }
         public virtual DbSet<UserRole> UserRole { get; set; }
+        public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -32,11 +32,9 @@ namespace AlibiScript.Model
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Category>(entity =>
+            modelBuilder.Entity<Categories>(entity =>
             {
-                entity.HasKey(e => e.ScriptId);
-
-                entity.Property(e => e.ScriptId).ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -44,7 +42,7 @@ namespace AlibiScript.Model
                     .HasMaxLength(10);
             });
 
-            modelBuilder.Entity<Character>(entity =>
+            modelBuilder.Entity<Characters>(entity =>
             {
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -66,13 +64,35 @@ namespace AlibiScript.Model
                 entity.Property(e => e.ScriptId).HasColumnName("scriptId");
 
                 entity.HasOne(d => d.Script)
-                    .WithMany(p => p.Character)
+                    .WithMany(p => p.Characters)
                     .HasForeignKey(d => d.ScriptId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Character_Script");
             });
 
-            modelBuilder.Entity<Script>(entity =>
+            modelBuilder.Entity<ScriptImages>(entity =>
+            {
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Image)
+                    .IsRequired()
+                    .HasColumnName("image")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.OrderNumber).HasColumnName("orderNumber");
+
+                entity.Property(e => e.ScriptId).HasColumnName("scriptId");
+
+                entity.HasOne(d => d.Script)
+                    .WithMany(p => p.ScriptImages)
+                    .HasForeignKey(d => d.ScriptId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ScriptImage_Script");
+            });
+
+            modelBuilder.Entity<Scripts>(entity =>
             {
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -117,41 +137,36 @@ namespace AlibiScript.Model
                 entity.Property(e => e.UserId).HasColumnName("userId");
 
                 entity.HasOne(d => d.Category)
-                    .WithMany(p => p.Script)
+                    .WithMany(p => p.Scripts)
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Script_Category");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Script)
+                    .WithMany(p => p.Scripts)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Script_User");
             });
 
-            modelBuilder.Entity<ScriptImage>(entity =>
+            modelBuilder.Entity<UserRole>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.HasNoKey();
 
-                entity.Property(e => e.Image)
+                entity.Property(e => e.Role)
                     .IsRequired()
-                    .HasColumnName("image")
-                    .HasMaxLength(50);
+                    .HasMaxLength(10);
 
-                entity.Property(e => e.OrderNumber).HasColumnName("orderNumber");
+                entity.Property(e => e.UserId).HasColumnName("userId");
 
-                entity.Property(e => e.ScriptId).HasColumnName("scriptId");
-
-                entity.HasOne(d => d.Script)
-                    .WithMany(p => p.ScriptImage)
-                    .HasForeignKey(d => d.ScriptId)
+                entity.HasOne(d => d.User)
+                    .WithMany()
+                    .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ScriptImage_Script");
+                    .HasConstraintName("FK_UserRole_Users");
             });
 
-            modelBuilder.Entity<User>(entity =>
+            modelBuilder.Entity<Users>(entity =>
             {
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -161,6 +176,10 @@ namespace AlibiScript.Model
                     .IsRequired()
                     .HasColumnName("account")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.ApplicatedDate)
+                    .HasColumnName("applicatedDate")
+                    .HasColumnType("date");
 
                 entity.Property(e => e.Image)
                     .HasColumnName("image")
@@ -175,26 +194,6 @@ namespace AlibiScript.Model
                     .IsRequired()
                     .HasColumnName("password")
                     .HasMaxLength(150);
-            });
-
-            modelBuilder.Entity<UserRole>(entity =>
-            {
-                entity.HasKey(e => e.UserId)
-                    .HasName("PK_UserRole_1");
-
-                entity.Property(e => e.UserId)
-                    .HasColumnName("userId")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Role)
-                    .IsRequired()
-                    .HasMaxLength(10);
-
-                entity.HasOne(d => d.User)
-                    .WithOne(p => p.UserRole)
-                    .HasForeignKey<UserRole>(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UserRole_User");
             });
 
             OnModelCreatingPartial(modelBuilder);

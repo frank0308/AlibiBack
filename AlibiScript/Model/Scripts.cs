@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace AlibiScript.Model
 {
-    public partial class Script
+    public partial class Scripts
     {
-        public Script()
+        public Scripts()
         {
-            Character = new HashSet<Character>();
-            ScriptImage = new HashSet<ScriptImage>();
+            Characters = new HashSet<Characters>();
+            ScriptImages = new HashSet<ScriptImages>();
         }
 
         public Guid Id { get; set; }
@@ -23,11 +23,11 @@ namespace AlibiScript.Model
         public DateTime CreateTime { get; set; }
         public string GameMaster { get; set; }
         public Guid UserId { get; set; }
-        public Guid CategoryId { get; set; }
+        public int CategoryId { get; set; }
 
-        public virtual Category Category { get; set; }
-        public virtual User User { get; set; }
-        public virtual ICollection<Character> Character { get; set; }
-        public virtual ICollection<ScriptImage> ScriptImage { get; set; }
+        public virtual Categories Category { get; set; }
+        public virtual Users User { get; set; }
+        public virtual ICollection<Characters> Characters { get; set; }
+        public virtual ICollection<ScriptImages> ScriptImages { get; set; }
     }
 }

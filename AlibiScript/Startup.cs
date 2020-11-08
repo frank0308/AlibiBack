@@ -50,9 +50,9 @@ namespace AlibiScript
 
             //連接資料庫
             services.AddDbContext<AlibiDBContext>(options => options.UseSqlServer(Configuration["AlibiConnection"]));
-            
+
             //註冊Jwt Helper
-            services.AddSingleton<JwtHelper>();
+            services.AddSingleton<IJwtHelper, JwtHelper>();
 
             //註冊加密套件
             services.AddScoped<IEncryptionAdapter, BcryptHash>();
@@ -111,6 +111,8 @@ namespace AlibiScript
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication(); //先驗證
 

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace AlibiScript.Model
 {
-    public partial class User
+    public partial class Users
     {
-        public User()
+        public Users()
         {
-            Script = new HashSet<Script>();
+            Scripts = new HashSet<Scripts>();
         }
 
         public Guid Id { get; set; }
@@ -15,8 +15,8 @@ namespace AlibiScript.Model
         public string Password { get; set; }
         public string Name { get; set; }
         public string Image { get; set; }
+        public DateTime ApplicatedDate { get; set; }
 
-        public virtual UserRole UserRole { get; set; }
-        public virtual ICollection<Script> Script { get; set; }
+        public virtual ICollection<Scripts> Scripts { get; set; }
     }
 }

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace AlibiScript.Model
 {
-    public partial class ScriptImage
+    public partial class ScriptImages
     {
         public Guid Id { get; set; }
         public string Image { get; set; }
         public Guid ScriptId { get; set; }
         public int? OrderNumber { get; set; }
 
-        public virtual Script Script { get; set; }
+        public virtual Scripts Script { get; set; }
     }
 }

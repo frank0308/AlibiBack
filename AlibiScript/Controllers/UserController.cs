@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AlibiScript.Interface;
 using AlibiScript.Model;
+using AlibiScript.ViewModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -23,7 +24,7 @@ namespace AlibiScript.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult SignUp(User user)
+        public IActionResult SignUp(SignUpViewModel user)
         {
             if (ModelState.IsValid && _userService.UserSignUp(user))
             {
@@ -31,7 +32,22 @@ namespace AlibiScript.Controllers
             }
             else
             {
-                return BadRequest(ModelState);
+                return NotFound();
+            }
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult<UserInfoViewModel> GetUserInfo()
+        {
+            if (_userService.UserExist(User.Identity.Name))
+            {
+                UserInfoViewModel userInfo = _userService.GetUserInfo(User.Identity.Name);
+                return userInfo;
+            }
+            else
+            {
+                return NotFound();
             }
         }
     }

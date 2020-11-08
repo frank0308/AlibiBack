@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AlibiScript.Interface;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AlibiScript.Helpers
 {
-    public class JwtHelper
+    public class JwtHelper : IJwtHelper
     {
         private readonly IConfiguration Configuration;
 

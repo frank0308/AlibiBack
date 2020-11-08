@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AlibiScript.Model
 {
-    public partial class Character
+    public partial class Characters
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -11,6 +11,6 @@ namespace AlibiScript.Model
         public string Image { get; set; }
         public Guid ScriptId { get; set; }
 
-        public virtual Script Script { get; set; }
+        public virtual Scripts Script { get; set; }
     }
 }
