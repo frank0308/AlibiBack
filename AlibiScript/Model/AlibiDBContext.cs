@@ -44,10 +44,6 @@ namespace AlibiScript.Model
 
             modelBuilder.Entity<Characters>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
-
                 entity.Property(e => e.Image)
                     .HasColumnName("image")
                     .HasMaxLength(50);
@@ -72,10 +68,6 @@ namespace AlibiScript.Model
 
             modelBuilder.Entity<ScriptImages>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
-
                 entity.Property(e => e.Image)
                     .IsRequired()
                     .HasColumnName("image")
@@ -89,7 +81,7 @@ namespace AlibiScript.Model
                     .WithMany(p => p.ScriptImages)
                     .HasForeignKey(d => d.ScriptId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ScriptImage_Script");
+                    .HasConstraintName("FK_ScriptImages_Scripts");
             });
 
             modelBuilder.Entity<Scripts>(entity =>
@@ -114,7 +106,7 @@ namespace AlibiScript.Model
                 entity.Property(e => e.Intro)
                     .IsRequired()
                     .HasColumnName("intro")
-                    .HasMaxLength(200);
+                    .HasMaxLength(400);
 
                 entity.Property(e => e.IsPlace).HasColumnName("isPlace");
 
@@ -151,17 +143,19 @@ namespace AlibiScript.Model
 
             modelBuilder.Entity<UserRole>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.UserId);
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("userId")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Role)
                     .IsRequired()
                     .HasMaxLength(10);
 
-                entity.Property(e => e.UserId).HasColumnName("userId");
-
                 entity.HasOne(d => d.User)
-                    .WithMany()
-                    .HasForeignKey(d => d.UserId)
+                    .WithOne(p => p.UserRole)
+                    .HasForeignKey<UserRole>(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserRole_Users");
             });

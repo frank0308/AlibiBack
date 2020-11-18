@@ -17,6 +17,7 @@ namespace AlibiScript.Model
         public string Image { get; set; }
         public DateTime ApplicatedDate { get; set; }
 
+        public virtual UserRole UserRole { get; set; }
         public virtual ICollection<Scripts> Scripts { get; set; }
     }
 }

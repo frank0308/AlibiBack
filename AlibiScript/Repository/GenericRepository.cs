@@ -26,6 +26,7 @@ namespace AlibiScript.Repository
         public void Delete(TEntity entity)
         {
             _context.Entry(entity).State = EntityState.Deleted;
+            _context.SaveChanges();
         }
 
         public IEnumerable<TEntity> GetBy(Expression<Func<TEntity, bool>> expression)

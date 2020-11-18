@@ -7,7 +7,7 @@ namespace AlibiScript.ViewModel
 {
     public class LoginViewModel
     {
-        public string account { get; set; }
-        public string password { get; set; }
+        public string Account { get; set; }
+        public string Password { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using AlibiScript.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace AlibiScript.Service
@@ -12,12 +13,16 @@ namespace AlibiScript.Service
     {
         private readonly IRepository<Users> _repo;
         private readonly IRepository<UserRole> _repo_Role;
+        private readonly IRepository<Scripts> _repo_Script;
+        private readonly IRepository<ScriptImages> _repo_ScriptImage;
         private readonly IEncryptionAdapter _encrypt;
-        public UserService(IRepository<Users> userRepo, IEncryptionAdapter encryptionAdapter, IRepository<UserRole> userRoleRepo)
+        public UserService(IRepository<Users> userRepo, IEncryptionAdapter encryptionAdapter, IRepository<UserRole> userRoleRepo, IRepository<Scripts> scriptRepo, IRepository<ScriptImages> scriptImageRepo)
         {
             _repo = userRepo;
             _encrypt = encryptionAdapter;
             _repo_Role = userRoleRepo;
+            _repo_Script = scriptRepo;
+            _repo_ScriptImage = scriptImageRepo;
         }
 
         public bool UserSignUp(SignUpViewModel userVM)
@@ -56,10 +61,10 @@ namespace AlibiScript.Service
 
         public bool LoginVerify(LoginViewModel loginVM)
         {
-            if (UserExist(loginVM.account))
+            if (UserExist(loginVM.Account))
             {
-                Users user = _repo.GetAll().Single(x => x.Account == loginVM.account);
-                if(_encrypt.Verify(user.Password, loginVM.password))
+                Users user = _repo.GetAll().Single(x => x.Account == loginVM.Account);
+                if(_encrypt.Verify(user.Password, loginVM.Password))
                 {
                     return true;
                 }
@@ -81,6 +86,19 @@ namespace AlibiScript.Service
                 Name = user.Name,
                 Image = user.Image
             };
+        }
+
+        public IEnumerable<SimpleScriptViewModel> GetMyScript(string account)
+        {
+            Guid userId = _repo.GetAll().FirstOrDefault(x => x.Account == account).Id;
+            return _repo_Script.GetAll().Where(x => x.UserId == userId).Select(x => new SimpleScriptViewModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Image = _repo_ScriptImage.GetAll().Where(y => y.ScriptId == x.Id).OrderBy(x => x.OrderNumber)
+                        .ElementAt(0).Image
+
+            });
         }
     }
 }

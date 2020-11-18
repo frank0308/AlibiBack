@@ -13,5 +13,6 @@ namespace AlibiScript.Interface
         public bool UserExist(string account);
         public bool LoginVerify(LoginViewModel loginVM);
         public UserInfoViewModel GetUserInfo(string account);
+        public IEnumerable<SimpleScriptViewModel> GetMyScript(string account);
     }
 }

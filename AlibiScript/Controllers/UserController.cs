@@ -50,5 +50,14 @@ namespace AlibiScript.Controllers
                 return NotFound();
             }
         }
+
+        [Authorize]
+        [HttpGet]
+        [Route("[action]")]
+        public ActionResult<List<SimpleScriptViewModel>> GetMyScript()
+        {
+            string account = User.Identity.Name;
+            return _userService.GetMyScript(account).ToList();
+        }
     }
 }

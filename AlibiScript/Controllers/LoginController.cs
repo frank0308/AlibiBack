@@ -21,11 +21,13 @@ namespace AlibiScript.Controllers
             _userService = userService;
             _jwt = jwtHelper;
         }
-        public ActionResult<string> Login(LoginViewModel loginVM)
+
+        [HttpGet]
+        public ActionResult<string> Login([FromQuery]LoginViewModel loginVM)
         {
             if (_userService.LoginVerify(loginVM))
             {
-                return _jwt.GenerateToken(loginVM.account);
+                return _jwt.GenerateToken(loginVM.Account);
             }
             else
             {
